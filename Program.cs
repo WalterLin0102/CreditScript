@@ -44,13 +44,13 @@ namespace CreditScriptDotNet5
             Console.WriteLine("Input cifNo(Enter get random)：");
             var cifNo = Console.ReadLine();
             if (string.IsNullOrEmpty(cifNo) && identityType == "I")
-                cifNo = "I000000000855";
+                cifNo = "I000000179603";
             if (string.IsNullOrEmpty(cifNo) && identityType == "C")
-                cifNo = "C000000000010";
+                cifNo = "C000000001890";
             result.CifNo = cifNo;
             //隨意給值
-            result.IdentificationType = "5";
-            result.IdNo = "789123456";
+            result.IdentificationType = "1";
+            result.IdNo = "851118146087";
 
             result.FirstName = new string(Enumerable.Repeat(charsEnglish, 10)
                     .Select(s => s[random.Next(s.Length)]).ToArray());
@@ -395,13 +395,13 @@ namespace CreditScriptDotNet5
             result.CaseNo = caseNo;
 
 
-            string creditPath = @".\credit\";
-            if (!Directory.Exists(creditPath))
+            string casePath = $@".\{result.CaseNo}\";
+            if (!Directory.Exists(casePath))
             {
-                System.IO.FileInfo file = new System.IO.FileInfo(creditPath);
+                System.IO.FileInfo file = new System.IO.FileInfo(casePath);
                 file.Directory.Create();
             }
-            creditPath = creditPath + caseNo + ".json";
+            string creditPath = casePath + caseNo + ".json";
             using (StreamWriter sw = File.CreateText(creditPath))
             {
                 sw.WriteLine(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
@@ -459,13 +459,13 @@ namespace CreditScriptDotNet5
             });
             insuranceResult.InsurceFeeList = insurceFeeList;
 
-            string insuranceCollateralPath = @".\Insurce\Collateral\";
-            if (!Directory.Exists(insuranceCollateralPath))
-            {
-                System.IO.FileInfo file2 = new System.IO.FileInfo(insuranceCollateralPath);
-                file2.Directory.Create();
-            }
-            insuranceCollateralPath = insuranceCollateralPath + "Collateral_" + caseNo + ".json";
+            //string insuranceCollateralPath = @".\Insurce\Collateral\";
+            //if (!Directory.Exists(insuranceCollateralPath))
+            //{
+            //    System.IO.FileInfo file2 = new System.IO.FileInfo(insuranceCollateralPath);
+            //    file2.Directory.Create();
+            //}
+            string insuranceCollateralPath = casePath + "Collateral_" + caseNo + ".json";
             using (StreamWriter sw = File.CreateText(insuranceCollateralPath))
             {
                 sw.WriteLine(JsonConvert.SerializeObject(insuranceResult, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
@@ -497,17 +497,77 @@ namespace CreditScriptDotNet5
             }
             repaymentInsuranceResult.TenureList = tenureList;
 
-            string insuranceRepaymentPath = @".\Insurce\Repayment\";
-            if (!Directory.Exists(insuranceRepaymentPath))
-            {
-                System.IO.FileInfo file3 = new System.IO.FileInfo(insuranceRepaymentPath);
-                file3.Directory.Create();
-            }
-            insuranceRepaymentPath = insuranceRepaymentPath + "RepaymentInsurce_" + caseNo + ".json";
+            //string insuranceRepaymentPath = @".\Insurce\Repayment\";
+            //if (!Directory.Exists(insuranceRepaymentPath))
+            //{
+            //    System.IO.FileInfo file3 = new System.IO.FileInfo(insuranceRepaymentPath);
+            //    file3.Directory.Create();
+            //}
+            string insuranceRepaymentPath = casePath + "RepaymentInsurce_" + caseNo + ".json";
             using (StreamWriter sw = File.CreateText(insuranceRepaymentPath))
             {
                 sw.WriteLine(JsonConvert.SerializeObject(repaymentInsuranceResult, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
             }
+
+            var apiResult = new List<ApiSetting>();
+            var quiry = new Dictionary<string, string>();
+            quiry.Add("caseNo", result.CaseNo);
+            var caseAPIResult = new ApiSetting()
+            {
+                request = new RequestBody()
+                {
+                    uri = "/Case/GetCredit",
+                    method = "GET",
+                    queries = quiry
+                },
+                response = new ResponseBody()
+                {
+                    file = new FileBody()
+                    {
+                        name = $"configs/CommencementCase/{result.CaseNo}/{result.CaseNo}.json"
+                    }
+                }
+            };
+            apiResult.Add(caseAPIResult);
+            var insuranceAPIResult = new ApiSetting()
+            {
+                request = new RequestBody()
+                {
+                    uri = $"/Company/{result.CompanyId}/CaseNo/{result.CaseNo}/InsuranceFee",
+                    method = "POST"
+                },
+                response = new ResponseBody()
+                {
+                    file = new FileBody()
+                    {
+                        name = $"configs/CommencementCase/{result.CaseNo}/Collateral_{result.CaseNo}.json"
+                    }
+                }
+            };
+            apiResult.Add(insuranceAPIResult);
+            var repaymentAPIResult = new ApiSetting()
+            {
+                request = new RequestBody()
+                {
+                    uri = $"/Company/{result.CompanyId}/CaseNo/{result.CaseNo}/RepaymentInsuranceFee",
+                    method = "POST"
+                },
+                response = new ResponseBody()
+                {
+                    file = new FileBody()
+                    {
+                        name = $"configs/CommencementCase/{result.CaseNo}/RepaymentInsurce_{result.CaseNo}.json"
+                    }
+                }
+            };
+            apiResult.Add(repaymentAPIResult);
+
+            string apiSettingPath = casePath + "api-setting.json";
+            using (StreamWriter sw = File.CreateText(apiSettingPath))
+            {
+                sw.WriteLine(JsonConvert.SerializeObject(apiResult, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Include }));
+            }
+
 
             Console.WriteLine("=======================Repayment Insurance Data Start============================");
             Console.WriteLine("======================= FileName：   RepaymentInsurce_" + caseNo + "==================");
@@ -527,6 +587,9 @@ namespace CreditScriptDotNet5
             Console.WriteLine();
             Console.WriteLine("Insurance > Repayment file name：");
             Console.WriteLine("RepaymentInsurce_" + caseNo);
+            Console.WriteLine();
+            Console.WriteLine("moco-global-setting：");
+            Console.WriteLine($"configs/CommencementCase/{result.CaseNo}/api-setting.json");
             Console.WriteLine(); Console.WriteLine(); Console.WriteLine();
             Console.ReadLine();
         }

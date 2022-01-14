@@ -14,3 +14,5 @@ D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.dll
 D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\ref\CreditScriptDotNet5.dll
 D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.pdb
 D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.genruntimeconfig.cache
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\Newtonsoft.Json.dll
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.csproj.CopyComplete

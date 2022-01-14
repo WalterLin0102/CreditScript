@@ -453,5 +453,7 @@ $RECYCLE.BIN/
 internal-nlog.txt
 # Ignoring directories
 # Both the directory itself and its contents will be ignored.
-bin/
+/bin/
+/obj/
+.vs/CreditScriptDotNet5/v17/.suo
 obj/
