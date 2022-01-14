@@ -395,7 +395,7 @@ namespace CreditScriptDotNet5
             result.CaseNo = caseNo;
 
 
-            string casePath = $@".\{result.CaseNo}\";
+            string casePath = $@".{Path.DirectorySeparatorChar}{result.CaseNo}{Path.DirectorySeparatorChar}";
             if (!Directory.Exists(casePath))
             {
                 System.IO.FileInfo file = new System.IO.FileInfo(casePath);
