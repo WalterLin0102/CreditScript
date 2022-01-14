@@ -457,3 +457,4 @@ internal-nlog.txt
 /obj/
 .vs/CreditScriptDotNet5/v17/.suo
 obj/
+obj/*
