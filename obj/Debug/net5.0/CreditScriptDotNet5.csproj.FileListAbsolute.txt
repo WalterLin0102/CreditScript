@@ -1,0 +1,16 @@
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.csproj.AssemblyReference.cache
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.GeneratedMSBuildEditorConfig.editorconfig
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.AssemblyInfoInputs.cache
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.AssemblyInfo.cs
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.csproj.CoreCompileInputs.cache
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\CreditScriptDotNet5.exe
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\CreditScriptDotNet5.deps.json
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\CreditScriptDotNet5.runtimeconfig.json
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\CreditScriptDotNet5.runtimeconfig.dev.json
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\CreditScriptDotNet5.dll
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\ref\CreditScriptDotNet5.dll
+D:\IBM\CreditScriptDotNet5\bin\Debug\net5.0\CreditScriptDotNet5.pdb
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.dll
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\ref\CreditScriptDotNet5.dll
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.pdb
+D:\IBM\CreditScriptDotNet5\obj\Debug\net5.0\CreditScriptDotNet5.genruntimeconfig.cache
