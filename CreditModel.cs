@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CreditScriptDotNet5
+namespace CreditScriptDotNet5.XXX
 {
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.22.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class CustomerIndivisual
@@ -41,6 +41,48 @@ namespace CreditScriptDotNet5
 
         [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Include)]
         public string Email { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workAddressLevel1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkAddressLevel1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workAddressLevel2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkAddressLevel2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workAddressLevel3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkAddressLevel3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workAddressLevel4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkAddressLevel4 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workAddressLevel5", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkAddressLevel5 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workPhoneNo", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkPhoneNo { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workFaxNo", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WorkFaxNo { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("employerName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EmployerName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("occupation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Occupation { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("civilServant", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CivilServant { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("position", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Position { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("lengthOfEmployment", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? LengthOfEmployment { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("monthlyIncome", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? MonthlyIncome { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("workingInSingapore", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? WorkingInSingapore { get; set; }
 
 
     }

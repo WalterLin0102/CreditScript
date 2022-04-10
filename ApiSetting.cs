@@ -16,6 +16,11 @@ namespace CreditScriptDotNet5
         public string uri { get; set; }
         public string method { get; set; }
         public Dictionary<string, string> queries { get; set; }
+        public RequestFileBody? file { get; set; }
+    }
+    public class RequestFileBody
+    {
+        public string json { get; set; }
     }
     public class ResponseBody
     {
