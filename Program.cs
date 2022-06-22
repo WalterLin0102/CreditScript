@@ -206,6 +206,11 @@ namespace CreditScriptDotNet5
             Console.WriteLine("Input productVersion(or Enter get Default：9)：");
             var version = Console.ReadLine();
             result.Version = string.IsNullOrEmpty(version) ? 9 : Int32.Parse(version);
+            result.ProductVersion = result.Version;
+
+            Console.WriteLine("Input CaseVersion(or Enter get Default：1)：");
+            var caseVersion = Console.ReadLine();
+            result.CaseVersion = string.IsNullOrEmpty(caseVersion) ? 1 : Int32.Parse(caseVersion);
 
             result.QuotesType = "ETP";
             result.Currency = "MYR";
@@ -226,6 +231,7 @@ namespace CreditScriptDotNet5
             result.Npv = 9622.59;
             result.Autolife = true;
             result.AutolifeSumIssured = 29000;
+            result.ExpirationDate = DateTime.Parse("2022-12-31");
 
             Console.WriteLine("Input refinancing case?(or Enter get Default：N)：");
             var refinancing = Console.ReadLine();
@@ -269,16 +275,15 @@ namespace CreditScriptDotNet5
                 IdNo = individualData[IndividualIndexG].IdentityNo,
                 IdentificationType = individualData[IndividualIndexG].IdentificationTypeId,
                 FirstName = "DUNGCA, RAYMOND FERNANDEZ",
-                LegalPosition = "Guarantor",
-                
-                //Relationship = "Registered",
+                LegalPosition = "LG1", //Guarantor
+                Relation = "111", //Colleagues
                 MobilePhone1 = "09397657185",
                 //Remark = "A guarantor is someone who agrees to be responsible for your rent and your other legal obligations in a tenancy agreement"
             });
             result.GuarantorPersonIndividual = guarantorsI;
 
             List<GuarantorPersonCorporateVM> guarantorsC = new List<GuarantorPersonCorporateVM>();
-            int CorporateIndexG = random.Next(canUsedI.Count);
+            int CorporateIndexG = random.Next(canUsedC.Count);
             CorporateData[CorporateIndexG].IsUsed = true;
             guarantorsC.Add(new GuarantorPersonCorporateVM()
             {
@@ -288,8 +293,8 @@ namespace CreditScriptDotNet5
                 IdentificationType = CorporateData[CorporateIndexG].IdentificationTypeId,
                 //custemoName
                 CustomerName = "CHEAPOLAND TRANSERVICE MGMT. CORP",
-                LegalPosition = "Guarantor",
-                Relation = "Parents",
+                LegalPosition = "LG1", //Guarantor
+                Relation = "111", //Colleagues
                 MobilePhone1 = "09178277782",
             });
             result.GuarantorPersonCorporate = guarantorsC;
@@ -472,7 +477,7 @@ namespace CreditScriptDotNet5
                     //age = 2,
                     Cap = 5,
                     ManufacturerNationality = "EU",
-                    Displacement = 0,
+                    Displacement = "1500 S.P",
                     Transmission = "TM2",
                     Gasoline = "GL1",
                     VehicleColor = "Black",
@@ -482,7 +487,7 @@ namespace CreditScriptDotNet5
                     PurchasePrice = 350000,
                     SalesAppraisalPrice = 40000,
                     Insurance = String.IsNullOrWhiteSpace(insuranceType) ? "N" : insuranceType,
-                    RegistrationType = "Chattel Mortgage",
+                    RegistrationType = "cm",//Chattel Mortgage
                     SecurityAssetVehicleFee = new List<SecurityAssetVehicleFee>(),
                 });
             }
@@ -522,7 +527,7 @@ namespace CreditScriptDotNet5
             bool needRealEstate = string.IsNullOrEmpty(realEstate) ? false : realEstate == "Y";
             var realEstateDatas = new List<SecurityAssetRealEstates>();
             var realEstateSubSeqId = movableSubSeqId + 1;
-            if (needMovable)
+            if (needRealEstate)
             {
                 Console.WriteLine(" Y(有單)/N(無擔) (or Enter get Default N)：");
                 var colleteralForAply = Console.ReadLine();

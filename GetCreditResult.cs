@@ -20,6 +20,18 @@ namespace CreditScriptDotNet5
     }
     public partial class GetCreditRatingResultResp
     {
+        /// <summary>審查資料檔PK值</summary>
+        [Newtonsoft.Json.JsonProperty("submissionId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int SubmissionId { get; set; }
+
+        /// <summary>進件主檔key</summary>
+        [Newtonsoft.Json.JsonProperty("submissionNo", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int SubmissionNo { get; set; }
+
+        /// <summary>案件版號</summary>
+        [Newtonsoft.Json.JsonProperty("caseVersion", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int CaseVersion { get; set; }
+
         /// <summary>申請日期</summary>
         [Newtonsoft.Json.JsonProperty("applyIdType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ApplyIdType { get; set; }
@@ -77,8 +89,16 @@ namespace CreditScriptDotNet5
         public string ProductName { get; set; }
 
         /// <summary>產品 Version</summary>
+        [Newtonsoft.Json.JsonProperty("productVersion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? ProductVersion { get; set; }
+
+        /// <summary>產品 Version，避免已經接的人出錯，先保留</summary>
         [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? Version { get; set; }
+
+        /// <summary>Term and Condition.ConditionChange</summary>
+        [Newtonsoft.Json.JsonProperty("conditionChange", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ConditionChange { get; set; }
 
         /// <summary>報價類別</summary>
         [Newtonsoft.Json.JsonProperty("quotesType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -135,6 +155,10 @@ namespace CreditScriptDotNet5
         /// <summary>審查案件核准日</summary>
         [Newtonsoft.Json.JsonProperty("approvalDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? ApprovalDate { get; set; }
+
+        /// <summary>審查批覆書到期日</summary>
+        [Newtonsoft.Json.JsonProperty("expirationDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset? ExpirationDate { get; set; }
 
         /// <summary>浮動利率</summary>
         [Newtonsoft.Json.JsonProperty("interestFlatRate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -203,13 +227,15 @@ namespace CreditScriptDotNet5
         [Newtonsoft.Json.JsonProperty("creditRemark", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string CreditRemark { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("advancePayments", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("advancePayments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Advance AdvancePayments { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("customerIndivisual", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        /// <summary>申戶-自然人</summary>
+        [Newtonsoft.Json.JsonProperty("customerIndivisual", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CustomerIndivisual CustomerIndivisual { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("customerCorporate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        /// <summary>申戶-法人</summary>
+        [Newtonsoft.Json.JsonProperty("customerCorporate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CustomerCorporate CustomerCorporate { get; set; }
 
         /// <summary>保證人 - 自然人</summary>
@@ -246,6 +272,12 @@ namespace CreditScriptDotNet5
 
         [Newtonsoft.Json.JsonProperty("securityAssetVehicles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<SecurityAssetVehicles> SecurityAssetVehicles { get; set; }
+
+        /// <summary>附件</summary>
+        [Newtonsoft.Json.JsonProperty("attachments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<AttachmentVM> Attachments { get; set; }
+
+
     }
     public partial class Advance
     {
@@ -466,6 +498,10 @@ namespace CreditScriptDotNet5
         /// <summary>法定關係</summary>
         [Newtonsoft.Json.JsonProperty("legalPosition", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string LegalPosition { get; set; }
+
+        /// <summary>關係</summary>
+        [Newtonsoft.Json.JsonProperty("relation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Relation { get; set; }
 
 
     }
@@ -1073,7 +1109,7 @@ namespace CreditScriptDotNet5
 
         /// <summary>排氣量</summary>
         [Newtonsoft.Json.JsonProperty("displacement", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double? Displacement { get; set; }
+        public string Displacement { get; set; }
 
         /// <summary>變速方式</summary>
         [Newtonsoft.Json.JsonProperty("transmission", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1423,6 +1459,26 @@ namespace CreditScriptDotNet5
         /// <summary>支付日期</summary>
         [Newtonsoft.Json.JsonProperty("payDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? PayDate { get; set; }
+
+
+    }
+    public partial class AttachmentVM
+    {
+        [Newtonsoft.Json.JsonProperty("attachmentId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int AttachmentId { get; set; }
+
+        /// <summary>檔案中心的 Guid</summary>
+        [Newtonsoft.Json.JsonProperty("fileId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FileId { get; set; }
+
+        /// <summary>附件類型
+        ///  (SELECT ParamCode, ParamName FROM CreditRatingScales.SysParameter where ParamType='CRS.DocumentType' ORDER BY ParamOrder)</summary>
+        [Newtonsoft.Json.JsonProperty("documentType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DocumentType { get; set; }
+
+        /// <summary>檔案來源 (0:Submission  1: Credit  2:other)</summary>
+        [Newtonsoft.Json.JsonProperty("fileSource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FileSource { get; set; }
 
 
     }
