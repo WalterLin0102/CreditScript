@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Chailease.Insurce;
+using Chailease.Insurance.API;
 using Newtonsoft.Json;
 using Azure.Storage.Files.Shares;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
+using Chailease.AutoDebit.API;
 
 namespace CreditScriptDotNet5
 {
@@ -265,6 +266,7 @@ namespace CreditScriptDotNet5
             var autoDebitReferenceNo = Console.ReadLine();
             result.AutoDebitReferenceNo = String.IsNullOrEmpty(autoDebitReferenceNo) ? null : autoDebitReferenceNo;
 
+
             List<GuarantorPersonIndividualVM> guarantorsI = new List<GuarantorPersonIndividualVM>();
             int IndividualIndexG = random.Next(canUsedI.Count);
             individualData[IndividualIndexG].IsUsed = true;
@@ -313,14 +315,14 @@ namespace CreditScriptDotNet5
             {
                 FirstName = "KWOKSON",
                 LastName = "PABLO",
-                Relationship = "Parents",
+                Relationship = "109",
                 MobilePhone1 = "8797616324",
             });
             contactPersons.Add(new ContactPersons()
             {
                 FirstName = "NUR EL",
                 LastName = "SANPABLO",
-                Relationship = "Spouse",
+                Relationship = "104",
                 MobilePhone1 = "9746156189",
             });
             result.ContactPersons = contactPersons;
@@ -328,8 +330,8 @@ namespace CreditScriptDotNet5
             List<Fee> fees = new List<Fee>();
             fees.Add(new Fee()
             {
-                Item = "01",
-                PaidBy = "D",
+                Item = "1151002", //Commission
+                PaidBy = "C",
                 Amount = 100,
                 Finance = true,
                 Deduct = false,
@@ -337,57 +339,12 @@ namespace CreditScriptDotNet5
             });
             fees.Add(new Fee()
             {
-                Item = "02",
-                PaidBy = "C",
+                Item = "514501", //Handleing Fee
+                PaidBy = "D",
                 Amount = 200,
                 Finance = true,
                 Deduct = false,
                 Payment = "Y"
-            });
-            fees.Add(new Fee()
-            {
-                Item = "03",
-                PaidBy = "C",
-                Amount = 300,
-                Finance = true,
-                Deduct = false,
-                Payment = "M"
-            });
-            fees.Add(new Fee()
-            {
-                Item = "04",
-                PaidBy = "D",
-                Amount = 400,
-                Finance = true,
-                Deduct = false,
-                Payment = "C"
-            });
-            fees.Add(new Fee()
-            {
-                Item = "05",
-                PaidBy = "C",
-                Amount = 500,
-                Finance = true,
-                Deduct = false,
-                Payment = "C"
-            });
-            fees.Add(new Fee()
-            {
-                Item = "06",
-                PaidBy = "D",
-                Amount = 600,
-                Finance = true,
-                Deduct = false,
-                Payment = "C"
-            });
-            fees.Add(new Fee()
-            {
-                Item = "07",
-                PaidBy = "D",
-                Amount = 725,
-                Finance = true,
-                Deduct = false,
-                Payment = "C"
             });
             result.Fees = fees;
 
@@ -455,23 +412,27 @@ namespace CreditScriptDotNet5
             bool needVehicle = string.IsNullOrEmpty(vehicle) ? false : vehicle == "Y";
             var vehicleDatas = new List<SecurityAssetVehicles>();
             var vehicleSubSeqId = new Random().Next(99997);
+            var plateNo = string.Empty;
             if (needVehicle)
             {
                 Console.WriteLine(" Y(有單)/N(無擔) (or Enter get Default N)：");
                 var colleteralForAply = Console.ReadLine();
                 Console.WriteLine(" 保險是否委外購買Y/N (or Enter get Default N)：");
                 var insuranceType = Console.ReadLine();
+                Console.WriteLine(" 車牌 (or Enter get Default BJJ-5555)：");
+                plateNo = Console.ReadLine();
+                plateNo = String.IsNullOrEmpty(plateNo) ? "BJJ-5555" : plateNo;
                 vehicleDatas.Add(new SecurityAssetVehicles()
                 {
                     SubSeqId = vehicleSubSeqId,
                     AssetProperty = "s",
                     AssetType = "V",
-                    AssetCategory = "motor",
+                    AssetCategory = "", //motor
                     HasCollateralValue = colleteralForAply == "Y" ? true:false,
                     Purpose = "MAP01",
                     Brand = "BR4",
                     Model = "MD60",
-                    VehicleType = "VT10",
+                    VehicleType = "", //VT10
                     Transaction = "TS1",
                     DateManufacture = DateTimeOffset.Now.AddYears(-2),
                     //age = 2,
@@ -483,7 +444,7 @@ namespace CreditScriptDotNet5
                     VehicleColor = "Black",
                     Seats = 5,
                     Ton = 2,
-                    PlateNo = "BJJ-5555",
+                    PlateNo = plateNo,
                     PurchasePrice = 350000,
                     SalesAppraisalPrice = 40000,
                     Insurance = String.IsNullOrWhiteSpace(insuranceType) ? "N" : insuranceType,
@@ -507,7 +468,7 @@ namespace CreditScriptDotNet5
                     SubSeqId = movableSubSeqId,
                     AssetProperty = "f",
                     AssetType = "M",
-                    AssetCategory = "heavyMotor",
+                    AssetCategory = "", //heavyMotor
                     HasCollateralValue = colleteralForAply == "Y" ? true : false,
                     Purpose = "MAP03",
                     AssetName = "Mitsubishi Dozer",
@@ -536,7 +497,7 @@ namespace CreditScriptDotNet5
                     SubSeqId = movableSubSeqId,
                     AssetProperty = "f",
                     AssetType = "R",
-                    AssetCategory = "STD",
+                    AssetCategory = "", //STD
                     HasCollateralValue = colleteralForAply == "Y" ? true : false,
                     Purpose = "MAP03",
                     Owner = "MOHAMAD NOR SYABAN BIN MOHAMAD",
@@ -588,46 +549,75 @@ namespace CreditScriptDotNet5
             Console.WriteLine();
 
             //保險
-            var insuranceResult = new InsurceFeeViewModel();
-            insuranceResult.CompanyId = result.CompanyId;
-            var insurceFeeList = new List<InsurceFee>();
-            insurceFeeList.Add(new InsurceFee()
+            var insuranceResult = new GetCaseInsuranceRespResponseResult();
+            insuranceResult.Data = new GetCaseInsuranceResp()
             {
-                SubSeqId = vehicleSubSeqId,
-                ContractNo = caseNo,
-                PolicyNo = "12345",
-                InsuranceCompany = "Insurce Co.",
-                InsuranceType = "carinsurance",
-                SumInsured = 10000,
-                PolicyDate = DateTime.Now.AddMonths(-2),
-                PolicyExpiryDate = DateTime.Now.AddMonths(+2),
-                RoadTax = 0,
-                RoadTaxExpiryDate = DateTime.Now.AddMonths(+2),
-                ChargedPremium = 15000,
-                ActuralPremium = 200,
-                CommissionSharing = 30,
-                InsuranceFee = 0,
-                InsuranceProcessFee = 0
-            });
-            insurceFeeList.Add(new InsurceFee()
+                CompanyId = result.CompanyId,
+                CaseNo = caseNo,
+            };
+            var insurceFeeList = new List<CollateralItem>();
+            insurceFeeList.Add(new CollateralItem()
             {
-                SubSeqId = movableSubSeqId,
-                ContractNo = caseNo,
-                PolicyNo = "12345",
-                InsuranceCompany = "Insurce Co.",
-                InsuranceType = "AUTOLIFE",
-                SumInsured = 10000,
-                PolicyDate = DateTime.Now.AddMonths(-2),
-                PolicyExpiryDate = DateTime.Now.AddMonths(+2),
-                RoadTax = 0,
-                RoadTaxExpiryDate = DateTime.Now.AddMonths(+2),
-                ChargedPremium = 50,
-                ActuralPremium = 25,
-                CommissionSharing = 10,
-                InsuranceFee = 0,
-                InsuranceProcessFee = 0
+                Sequence = vehicleSubSeqId,
+                CollateralType = "V",
+                PlateNo = plateNo,
+                InsuranceFeeList = new List<InsuranceFeeItem>
+                {
+                    new InsuranceFeeItem()
+                    {
+                        InsuranceNo = $"{caseNo}Car001",
+                        InsuranceType = "Car",
+                        InsuranceCompany = "Cathay Life Insurance Company",
+                        InsuranceCompanyCode = "001",
+                        PolicyNo = $"{caseNo}Car001",
+                        PolicyIssueDate = DateTime.Parse("2020-01-10"),
+                        InsuredType = "NEW",
+                        InsuranceStartDate = DateTime.Now,
+                        InsuranceExpiryDate = DateTime.Now.AddMonths(12),
+                        RoadTax = 0,
+                        RoadTaxExpiryDate = DateTime.Now.AddMonths(2),
+                        ChargedPremium = 15000,
+                        ActuralPremium = 200,
+                        ActualSumInsured = 50000,
+                        CommissionSharing = 30,
+                       ChequeShareSum = true,
+                       DeductStatus = true,
+                       FinanceStatus = true,
+                       RepaymentPlan = "2",
+
+                    },
+                }
             });
-            insuranceResult.InsurceFeeList = insurceFeeList;
+            insurceFeeList.Add(new CollateralItem()
+            {
+                InsuranceFeeList = new List<InsuranceFeeItem>()
+                {
+                    new InsuranceFeeItem()
+                    {
+                        InsuranceNo = $"{caseNo}AutoLife001",
+                        InsuranceType = "AutoLife",
+                        InsuranceCompany = "Cathay Life Insurance Company",
+                        InsuranceCompanyCode = "001",
+                        PolicyNo = $"{caseNo}AutoLife001",
+                        PolicyIssueDate = DateTime.Parse("2020-01-10"),
+                        InsuredType = "NEW",
+                        InsuranceStartDate = DateTime.Now,
+                        InsuranceExpiryDate = DateTime.Now.AddMonths(12),
+                        RoadTax = 0,
+                        RoadTaxExpiryDate = DateTime.Now.AddMonths(2),
+                        ChargedPremium = 1000,
+                        ActuralPremium = 200,
+                        ActualSumInsured = 50000,
+                        CommissionSharing = 30,
+                       ChequeShareSum = true,
+                       DeductStatus = true,
+                       FinanceStatus = true,
+                       RepaymentPlan = "2",
+
+                    }
+                }
+            });
+            insuranceResult.Data.CollatorList = insurceFeeList;
 
             //string insuranceCollateralPath = @".\Insurce\Collateral\";
             //if (!Directory.Exists(insuranceCollateralPath))
@@ -635,14 +625,14 @@ namespace CreditScriptDotNet5
             //    System.IO.FileInfo file2 = new System.IO.FileInfo(insuranceCollateralPath);
             //    file2.Directory.Create();
             //}
-            string insuranceCollateralPath = casePath + "Collateral_" + caseNo + ".json";
+            string insuranceCollateralPath = casePath + "CaseInsurance_" + caseNo + ".json";
             using (StreamWriter sw = File.CreateText(insuranceCollateralPath))
             {
                 sw.WriteLine(JsonConvert.SerializeObject(insuranceResult, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
             }
 
             Console.WriteLine("=======================Insurance Data Start=============================");
-            Console.WriteLine("=======================FileName：Collateral_" + caseNo + "=============================");
+            Console.WriteLine("=======================FileName：CaseInsurance_" + caseNo + "=============================");
             Console.WriteLine("=======================Path：\\Insurce\\Collateral=============================");
             Console.WriteLine();
             Console.WriteLine(JsonConvert.SerializeObject(insuranceResult, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
@@ -651,22 +641,31 @@ namespace CreditScriptDotNet5
             Console.WriteLine();
 
             //還款
-            var repaymentInsuranceResult = new RepaymentInsurceFee();
-            repaymentInsuranceResult.CompanyId = result.CompanyId;
-            repaymentInsuranceResult.ContractNo = caseNo;
-            repaymentInsuranceResult.Msg_id = "0";
-            repaymentInsuranceResult.PaymentTenureType = "M";
-            var tenureList = new List<TenureInsurceFee>();
-            for (int i = 1; i < 61; i++)
+            var repaymentInsuranceResult = new GetCaseInsurancePaymentRespResponseResult();
+            Console.WriteLine("輸入還款保險筆數：預設0筆");
+            var repaymentCount = Console.ReadLine();
+            repaymentCount = string.IsNullOrEmpty(repaymentCount) ? "0" : repaymentCount;
+
+            Console.WriteLine("輸入票據總額金額：預設0");
+            var chequeShareSum = Console.ReadLine();
+            chequeShareSum = string.IsNullOrEmpty(chequeShareSum) ? "0" : chequeShareSum;
+            var paymentData = new List<PaymentDataItem>();
+
+            for (int i = 0; i < Convert.ToInt32(repaymentCount); i++)
             {
-                tenureList.Add(new TenureInsurceFee()
+                paymentData.Add(new PaymentDataItem()
                 {
-                    TenureId = i,
-                    InsuranceFee = 100,
-                    InsuranceProcessFee = 10,
+                    PaymentDate = DateTime.Now.AddMonths(i),
+                    Amount = 1000,
                 });
             }
-            repaymentInsuranceResult.TenureList = tenureList;
+            repaymentInsuranceResult.Data = new GetCaseInsurancePaymentResp()
+            {
+                CompanyId = result.CompanyId,
+                CaseNo = caseNo,
+                PaymentData = paymentData,
+                ChequeShareSum = Convert.ToDouble(chequeShareSum),
+            };
 
             //string insuranceRepaymentPath = @".\Insurce\Repayment\";
             //if (!Directory.Exists(insuranceRepaymentPath))
@@ -674,13 +673,13 @@ namespace CreditScriptDotNet5
             //    System.IO.FileInfo file3 = new System.IO.FileInfo(insuranceRepaymentPath);
             //    file3.Directory.Create();
             //}
-            string insuranceRepaymentPath = casePath + "RepaymentInsurce_" + caseNo + ".json";
+            string insuranceRepaymentPath = casePath + "RepaymentInsurance_" + caseNo + ".json";
             using (StreamWriter sw = File.CreateText(insuranceRepaymentPath))
             {
                 sw.WriteLine(JsonConvert.SerializeObject(repaymentInsuranceResult, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
             }
-            Console.WriteLine("=======================RepaymentInsurce Data Start=============================");
-            Console.WriteLine("=======================FileName：RepaymentInsurce_" + caseNo + "=============================");
+            Console.WriteLine("=======================RepaymentInsurance Data Start=============================");
+            Console.WriteLine("=======================FileName：RepaymentInsurance_" + caseNo + "=============================");
             Console.WriteLine();
             Console.WriteLine(JsonConvert.SerializeObject(repaymentInsuranceResult, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
 
@@ -768,6 +767,36 @@ namespace CreditScriptDotNet5
                 sw.WriteLine(JsonConvert.SerializeObject(assignReq3, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
             }
 
+            //autoDebit
+            string autoDebitPeth = string.Empty;
+            if (!String.IsNullOrEmpty(autoDebitReferenceNo))
+            {
+                var autoDebitReferenceNoResp = new GetCaseAuthListAsyncServiceModel();
+                autoDebitReferenceNoResp.DataList = new List<AchgetCaseAuthInfoServiceModel>()
+                {
+                    new AchgetCaseAuthInfoServiceModel()
+                    {
+                        CompanyId = result.CompanyId,
+                        AchrefNo = autoDebitReferenceNo,
+                        CaseNo = caseNo,
+                        Achsetting = 1,
+                        AchbankCode = "MBBEMYKL",
+                        AchaccountNo = new Random().Next(10000000,99999999).ToString(),
+                        AchaccountId = result.IdNo,
+                        AchaccountName = $"MUHAMMAD AIMAN SYAHMI BIN ALWI",
+                        AchauthStatusId = 50,
+                        ApplyTime = DateTime.Now,
+                        ApplDt = DateTime.Now,
+                        Attachment = new string[]{ "308764C3-7154-41BC-8667-D61AF7A07E66" },
+                    }
+                };
+                autoDebitPeth = casePath + "GetCaseAuthList_" + caseNo  + ".json";
+                using (StreamWriter sw = File.CreateText(autoDebitPeth))
+                {
+                    sw.WriteLine(JsonConvert.SerializeObject(autoDebitReferenceNoResp, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
+                }
+            }
+
             //api-setting
             var apiResult = new List<ApiSetting>();
             var quiry = new Dictionary<string, string>();
@@ -789,18 +818,22 @@ namespace CreditScriptDotNet5
                 }
             };
             apiResult.Add(caseAPIResult);
+            var insurancejson =new Dictionary<string, string>();
+            insurancejson.Add("$.companyId", result.CompanyId.ToString());
+            insurancejson.Add("$.caseNo", caseNo);
             var insuranceAPIResult = new ApiSetting()
             {
                 request = new RequestBody()
                 {
-                    uri = $"/Company/{result.CompanyId}/CaseNo/{caseNo}/InsuranceFee",
-                    method = "POST"
+                    uri = $"/Insurance/Operation/Query/GetCaseInsurance",
+                    method = "POST",
+                    json_paths = insurancejson
                 },
                 response = new ResponseBody()
                 {
                     file = new FileBody()
                     {
-                        name = $"configs/CommencementCase/{caseNo}/Collateral_{caseNo}.json"
+                        name = $"configs/CommencementCase/{caseNo}/CaseInsurance_{caseNo}.json"
                     }
                 }
             };
@@ -809,14 +842,15 @@ namespace CreditScriptDotNet5
             {
                 request = new RequestBody()
                 {
-                    uri = $"/Company/{result.CompanyId}/CaseNo/{caseNo}/RepaymentInsuranceFee",
-                    method = "POST"
+                    uri = $"/Insurance/Operation/Query/GetCaseInsurancePayment",
+                    method = "POST",
+                    json_paths = insurancejson
                 },
                 response = new ResponseBody()
                 {
                     file = new FileBody()
                     {
-                        name = $"configs/CommencementCase/{caseNo}/RepaymentInsurce_{caseNo}.json"
+                        name = $"configs/CommencementCase/{caseNo}/RepaymentInsurance_{caseNo}.json"
                     }
                 }
             };
@@ -867,6 +901,32 @@ namespace CreditScriptDotNet5
                 apiResult.Add(AssignResult);
             }
 
+            if (!String.IsNullOrEmpty(autoDebitReferenceNo))
+            {
+                var autoDebitReqQuery = new Dictionary<string, string>();
+                autoDebitReqQuery.Add("CompanyId", result.CompanyId.ToString());
+                autoDebitReqQuery.Add("ACHRefNo", result.AutoDebitReferenceNo);
+                var autoDebitReq = new RequestBody()
+                {
+                    uri = $"/AutoDebitAuthorization/GetCaseAuthListAsync",
+                    method = "GET",
+                    queries = autoDebitReqQuery,
+                };
+                var autoDebitRsp = new ResponseBody()
+                {
+                    file = new FileBody()
+                    {
+                        name = $"configs/CommencementCase/{caseNo}/GetCaseAuthList_{caseNo}.json"
+                    }
+                };
+                var autoDebitApi = new ApiSetting()
+                {
+                    request = autoDebitReq,
+                    response = autoDebitRsp,
+                };
+                apiResult.Add(autoDebitApi);
+            }
+
             string apiSettingPath = casePath + "api-setting.json";
             using (StreamWriter sw = File.CreateText(apiSettingPath))
             {
@@ -875,7 +935,7 @@ namespace CreditScriptDotNet5
 
 
             Console.WriteLine("=======================Repayment Insurance Data Start============================");
-            Console.WriteLine("======================= FileName：   RepaymentInsurce_" + caseNo + "==================");
+            Console.WriteLine("======================= FileName：   RepaymentInsurance_" + caseNo + "==================");
             Console.WriteLine("======================= Path：   \\Insurce\\Repayment=============================");
             Console.WriteLine();
             Console.WriteLine(JsonConvert.SerializeObject(repaymentInsuranceResult, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() { NamingStrategy = new CamelCaseNamingStrategy() }, NullValueHandling = NullValueHandling.Include, DefaultValueHandling = DefaultValueHandling.Include }));
@@ -888,10 +948,10 @@ namespace CreditScriptDotNet5
             Console.WriteLine(caseNo);
             Console.WriteLine();
             Console.WriteLine("Insurance > Collateral file name：");
-            Console.WriteLine("Collateral_" + caseNo);
+            Console.WriteLine("CaseInsurance_" + caseNo);
             Console.WriteLine();
             Console.WriteLine("Insurance > Repayment file name：");
-            Console.WriteLine("RepaymentInsurce_" + caseNo);
+            Console.WriteLine("RepaymentInsurance_" + caseNo);
             Console.WriteLine();
             Console.WriteLine("moco-global-setting：");
             Console.WriteLine($"configs/CommencementCase/{caseNo}/api-setting.json");
